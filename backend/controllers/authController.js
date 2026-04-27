@@ -2,6 +2,11 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (id) => {
+  if (!process.env.JWT_SECRET) {
+    console.error('CRITICAL: JWT_SECRET is not defined in environment variables!');
+    // Fallback for development, but you MUST set this in production
+    return jwt.sign({ id }, 'temporary_development_secret_do_not_use_in_prod', { expiresIn: '30d' });
+  }
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
