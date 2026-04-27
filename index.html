@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskPro — Task Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='38' height='38' rx='10' fill='%237c3aed'/><rect x='54' y='8' width='38' height='38' rx='10' fill='%237c3aed' opacity='0.5'/><rect x='8' y='54' width='38' height='38' rx='10' fill='%237c3aed' opacity='0.5'/><rect x='54' y='54' width='38' height='38' rx='10' fill='%237c3aed'/></svg>">
+</head>
+<body>
+
+  <!-- ========== PARTICLES BACKGROUND ========== -->
+  <canvas id="hero-particles" class="particles-bg"></canvas>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 100 100" fill="none" width="20" height="20">
+            <rect x="8" y="8" width="38" height="38" rx="10" fill="white"/>
+            <rect x="54" y="8" width="38" height="38" rx="10" fill="white" opacity="0.5"/>
+            <rect x="8" y="54" width="38" height="38" rx="10" fill="white" opacity="0.5"/>
+            <rect x="54" y="54" width="38" height="38" rx="10" fill="white"/>
+          </svg>
+        </div>
+        <span class="brand-text">TaskPro</span>
+      </a>
+      <div class="nav-links">
+        <a href="#about" class="nav-link">About Us</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#dev" class="nav-link">Resources</a>
+      </div>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-ghost">Log In</a>
+        <a href="login.html" class="btn btn-primary">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== HERO SECTION ========== -->
+  <section class="hero">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    
+    <div class="hero-content reveal">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        TaskPro v2.0 is live
+      </div>
+      
+      <h1>
+        Plan, Track, and Ship with<br>
+        <span class="gradient-text type-effect" id="typewriter"></span><span class="cursor">|</span>
+      </h1>
+      
+      <p class="hero-p">
+        The dark-themed, ultra-responsive workspace that brings your teams, tasks, and velocity into one unified platform.
+      </p>
+      
+      <div class="hero-cta">
+        <a href="login.html" class="btn btn-primary btn-lg shine-effect">
+          Get Started
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- CSS-BASED DASHBOARD MOCKUP -->
+    <div class="mockup-wrapper reveal fade-up-delay" id="features">
+      <div class="dashboard-mockup glass-panel">
+        <div class="mockup-header">
+          <div class="mac-controls"><span></span><span></span><span></span></div>
+          <div class="mockup-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search...</div>
+        </div>
+        
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="sidebar-item active"><div class="s-icon"></div> Dashboard</div>
+            <div class="sidebar-item"><div class="s-icon"></div> Projects</div>
+            <div class="sidebar-item"><div class="s-icon"></div> Calendar</div>
+            <div class="sidebar-item"><div class="s-icon"></div> Team</div>
+          </div>
+          
+          <div class="mockup-content">
+            <div class="mockup-stats">
+              <div class="m-stat"><div class="m-stat-val">3</div><div class="m-stat-label">Total Tasks</div></div>
+              <div class="m-stat"><div class="m-stat-val">1</div><div class="m-stat-label">In Progress</div></div>
+              <div class="m-stat"><div class="m-stat-val">0</div><div class="m-stat-label">Completed</div></div>
+            </div>
+            
+            <div class="mockup-kanban">
+              <div class="m-col">
+                <div class="m-col-header">To Do <span class="m-count">2</span></div>
+                <div class="m-card">
+                  <div class="m-card-tag t-design">Design</div>
+                  <div class="m-card-title">Homepage UI</div>
+                  <div class="m-card-footer"><div class="m-avatar"></div></div>
+                </div>
+                <div class="m-card">
+                  <div class="m-card-tag t-dev">Backend</div>
+                  <div class="m-card-title">API Routing</div>
+                  <div class="m-card-footer"><div class="m-avatar"></div></div>
+                </div>
+              </div>
+              
+              <div class="m-col">
+                <div class="m-col-header">In Progress <span class="m-count">1</span></div>
+                <div class="m-card">
+                  <div class="m-card-tag t-dev">Frontend</div>
+                  <div class="m-card-title">Particle Animation</div>
+                  <div class="m-card-footer"><div class="m-avatar"></div></div>
+                  <div class="m-progress"><div class="m-bar" style="width: 70%"></div></div>
+                </div>
+              </div>
+              
+              <div class="m-col">
+                <div class="m-col-header">Done <span class="m-count">0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DEV INSTRUCTIONS SECTION ========== -->
+  <section class="dev-section" id="dev">
+    <div class="container">
+      <div class="section-heading reveal">
+        <h2>Local Development <span class="gradient-text">& Sharing</span></h2>
+        <p>Built for engineers, designed for speed. See how easy it is to spin up TaskPro locally and share it with your team.</p>
+      </div>
+      
+      <div class="dev-grid">
+        <div class="glass-card reveal">
+          <div class="card-icon cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h3>Local Development</h3>
+          <p>TaskPro uses zero complex build steps for the frontend UI. Just serve the files locally via Node, Python, or Live Server.</p>
+          <div class="code-block">
+            <div class="code-header">Terminal</div>
+            <code><span class="cmd">npx</span> serve .<br><span class="comment"># Serving! http://localhost:3000</span></code>
+          </div>
+        </div>
+        
+        <div class="glass-card reveal fade-delay">
+          <div class="card-icon pink">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          </div>
+          <h3>Team Sharing</h3>
+          <p>Easily deploy to Vercel, Netlify, or GitHub Pages. The glassmorphism UI is entirely achieved via standard HTML/CSS.</p>
+          <div class="code-block">
+            <div class="code-header">Terminal</div>
+            <code><span class="cmd">npm</span> run build<br><span class="cmd">vercel</span> --prod<br><span class="comment"># Deployed in 0.8s</span></code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT US SECTION ========== -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content reveal">
+          <h2>Built by <span class="gradient-text">Engineers</span>,<br>for Modern Teams</h2>
+          <p>We started TaskPro because we were tired of switching between six different tools just to ship a single feature. Our mission is to unify the product development workflow into one fast, intelligent, and beautiful workspace.</p>
+          <div class="about-stats">
+            <div class="a-stat"><strong>2024</strong><span>Founded</span></div>
+            <div class="a-stat"><strong>1M+</strong><span>Tasks Created</span></div>
+            <div class="a-stat"><strong>remote</strong><span>Team</span></div>
+          </div>
+        </div>
+        <div class="about-image reveal fade-delay">
+          <div class="glass-panel team-panel">
+            <div class="team-avatars">
+              <div class="t-avt bg-purple">PR</div>
+              <div class="t-avt bg-cyan">SJ</div>
+              <div class="t-avt bg-pink">MK</div>
+              <div class="t-avt bg-dark">+12</div>
+            </div>
+            <h3>A global team on a mission</h3>
+            <p>Backed by leading investors, our remote-first team spans across 14 countries.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRICING SECTION ========== -->
+  <section class="pricing-section" id="pricing">
+    <div class="container">
+      <div class="section-heading reveal">
+        <h2>Simple, transparent <span class="gradient-text">pricing</span></h2>
+        <p>Start for free, upgrade when you need to. No hidden fees.</p>
+      </div>
+      
+      <div class="pricing-grid">
+        <div class="price-card glass-card reveal">
+          <h3>Starter</h3>
+          <div class="price"><span>$</span>0<span class="period">/mo</span></div>
+          <p class="p-desc">Perfect for individuals and side projects.</p>
+          <ul class="p-features">
+            <li>Unlimited tasks</li>
+            <li>Up to 3 projects</li>
+            <li>Basic analytics</li>
+            <li>1-day support SLA</li>
+          </ul>
+          <a href="#" class="btn btn-ghost btn-block">Get Started</a>
+        </div>
+        
+        <div class="price-card glass-card popular reveal fade-delay">
+          <div class="popular-badge">Most Popular</div>
+          <h3>Pro</h3>
+          <div class="price"><span>$</span>12<span class="period">/user/mo</span></div>
+          <p class="p-desc">For fast-moving teams that need more power.</p>
+          <ul class="p-features">
+            <li>Everything in Starter</li>
+            <li>Unlimited projects</li>
+            <li>Advanced search</li>
+            <li>Custom workflows</li>
+          </ul>
+          <a href="#" class="btn btn-primary btn-block">Start Free Trial</a>
+        </div>
+        
+        <div class="price-card glass-card reveal fade-up-delay">
+          <h3>Enterprise</h3>
+          <div class="price">Custom</div>
+          <p class="p-desc">For large organizations with complex needs.</p>
+          <ul class="p-features">
+            <li>Everything in Pro</li>
+            <li>SSO (SAML/Okta)</li>
+            <li>Dedicated account manager</li>
+            <li>99.99% Uptime SLA</li>
+          </ul>
+          <a href="#" class="btn btn-ghost btn-block">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA SECTION ========== -->
+  <section class="cta-section reveal">
+    <div class="cta-box glass-panel">
+      <h2>Ready to get started?</h2>
+      <p>Join thousands of fast-moving teams using TaskPro.</p>
+      <a href="login.html" class="btn btn-primary btn-lg">Create Free Account</a>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="logo-icon sm">
+          <svg viewBox="0 0 100 100" fill="none" width="16" height="16">
+            <rect x="8" y="8" width="38" height="38" rx="10" fill="white"/>
+            <rect x="54" y="8" width="38" height="38" rx="10" fill="white" opacity="0.5"/>
+            <rect x="8" y="54" width="38" height="38" rx="10" fill="white" opacity="0.5"/>
+            <rect x="54" y="54" width="38" height="38" rx="10" fill="white"/>
+          </svg>
+        </div>
+        <span>TaskPro inc.</span>
+      </div>
+      <div class="footer-links">
+        <a href="login.html">Login</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
