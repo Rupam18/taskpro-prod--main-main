@@ -15,20 +15,26 @@ const allowedOrigins = [
   'http://localhost:5000',
   'http://localhost:5001',
   'http://127.0.0.1:3000',
-  'http://127.0.0.1:5000',
   'http://127.0.0.1:5001',
-  process.env.FRONTEND_URL // Allow production frontend URL from env
-].filter(Boolean);
+  process.env.FRONTEND_URL
+].filter(Boolean).map(url => url.replace(/\/$/, "")); // Remove trailing slashes
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const normalizedOrigin = origin.replace(/\/$/, "");
+    if (allowedOrigins.indexOf(normalizedOrigin) !== -1 || normalizedOrigin.includes('vercel.app')) {
       callback(null, true);
     } else {
+      console.log('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.get('/', (req, res) => res.send('TaskPro API is running...'));
