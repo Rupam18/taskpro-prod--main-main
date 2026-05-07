@@ -2,7 +2,7 @@ services:
   - type: web
     name: taskpro-app
     env: node
-    buildCommand: npm run install-all
+    buildCommand: "npm install && cd backend && npm install"
     startCommand: npm start
     envVars:
       - key: NODE_ENV

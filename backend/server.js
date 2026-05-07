@@ -49,9 +49,9 @@ app.use('/api/team', require('./routes/teamRoutes'));
 const frontendPath = path.join(__dirname, '..');
 app.use(express.static(frontendPath));
 
-// Handle SPA routing - send all other requests to index.html
-app.get('(.*)', (req, res) => {
-  if (req.path.startsWith('/api')) return; // Don't intercept API calls
+// Handle SPA routing - send all other requests to dashboard.html
+app.use((req, res) => {
+  if (req.path.startsWith('/api')) return res.status(404).json({ message: 'API route not found' });
   res.sendFile(path.join(frontendPath, 'dashboard.html'));
 });
 
