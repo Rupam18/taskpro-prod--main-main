@@ -34,7 +34,7 @@
 
     <nav class="sidebar-nav">
       <div class="nav-section-label">Main</div>
-      <a href="dashboard.html" class="nav-item active">
+      <a href="dashboard.html" class="nav-item active" id="navDashboard">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         <span>Dashboard</span>
       </a>
@@ -65,7 +65,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span>Team</span>
       </a>
-      <a href="#" class="nav-item" id="navSettings" data-tooltip="Settings">
+      <a href="settings.html" class="nav-item" id="navSettings" data-tooltip="Settings">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         <span class="nav-label">Settings</span>
       </a>
@@ -100,12 +100,27 @@
         <div id="searchResults" class="search-results-dropdown hidden"></div>
       </div>
       <div class="topbar-actions">
-        <button class="topbar-btn" id="notifBtn" aria-label="Notifications">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          <span class="notif-badge">3</span>
-        </button>
-        <button class="topbar-btn" aria-label="Help">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <div class="notif-wrapper">
+          <button class="topbar-btn" id="notifBtn" aria-label="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notif-badge">3</span>
+          </button>
+          <div id="notifDropdown" class="notif-dropdown hidden">
+             <div class="notif-header">
+                <h3>Notifications</h3>
+                <button class="btn-clear-all">Clear all</button>
+             </div>
+             <div id="notifList" class="notif-list">
+                <!-- Notifications will be injected here -->
+                <div class="notif-empty">No new notifications</div>
+             </div>
+             <div class="notif-footer">
+                <a href="#">View all notifications</a>
+             </div>
+          </div>
+        </div>
+        <button class="topbar-btn" id="topbarSettings" onclick="window.location.href='settings.html'" aria-label="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1-2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
       </div>
     </header>
@@ -113,20 +128,41 @@
     <!-- Dashboard Content -->
     <div class="dashboard-content">
 
-      <!-- Welcome Header -->
-      <div class="welcome-section">
-        <div>
-          <h1 id="dashboardTitle">Welcome back, <span id="welcomeName">User</span></h1>
-          <p id="dashboardSubtitle">Here's what's happening with your projects today.</p>
-          <button id="clearProjectFilter" class="btn btn-ghost hidden" style="margin-top: 8px; font-size: 0.8rem; padding: 4px 12px;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            Clear Filter
+      <!-- Project Health & Quick Actions -->
+      <div class="top-row-grid">
+        <div class="welcome-section">
+          <div>
+            <h1 id="dashboardTitle">Welcome back, <span id="welcomeName">User</span></h1>
+            <p id="dashboardSubtitle">Here's what's happening with your projects today.</p>
+            <button id="clearProjectFilter" class="btn btn-ghost hidden" style="margin-top: 8px; font-size: 0.8rem; padding: 4px 12px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Clear Filter
+            </button>
+          </div>
+          <button class="btn-new-project" id="newTaskBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Task
           </button>
         </div>
-        <button class="btn-new-project" id="newTaskBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Task
-        </button>
+
+        <div class="health-card glass-panel anim-fade-up" id="projectHealthCard" style="--delay: 0.1s">
+          <div class="health-header">
+            <h3>Project Health</h3>
+            <span class="health-status" id="healthStatus">Scanning...</span>
+          </div>
+          <div class="health-body">
+            <div class="health-gauge">
+              <svg viewBox="0 0 100 55" class="gauge-svg">
+                <path d="M 10,50 A 40,40 0 1,1 90,50" class="gauge-bg" />
+                <path d="M 10,50 A 40,40 0 1,1 90,50" class="gauge-fill" id="healthGaugeFill" style="stroke-dasharray: 0, 126" />
+              </svg>
+              <div class="gauge-value" id="healthScore">--</div>
+            </div>
+            <div class="health-info">
+              <p id="healthMessage">Select a project to see detailed health metrics.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Stat Cards -->
@@ -188,6 +224,7 @@
           <button class="filter-btn">Design</button>
           <button class="filter-btn">Frontend</button>
           <button class="filter-btn">Backend</button>
+          <button class="filter-btn">General</button>
         </div>
       </div>
 
@@ -517,6 +554,29 @@
     }
     .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4); }
   </style>
+
+  <!-- Command Palette -->
+  <div class="command-palette-overlay" id="commandPalette">
+    <div class="command-palette">
+      <div class="cp-search-wrapper">
+        <div class="cp-search-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <input type="text" id="cpInput" class="cp-input" placeholder="Type a command or search..." autocomplete="off">
+        <div class="cp-shortcut">ESC</div>
+      </div>
+      
+      <div class="cp-results" id="cpResults">
+        <!-- Results will be injected here -->
+      </div>
+
+      <div class="cp-footer">
+        <div class="cp-hint"><kbd>↑↓</kbd> to navigate</div>
+        <div class="cp-hint"><kbd>Enter</kbd> to select</div>
+        <div class="cp-hint"><kbd>ESC</kbd> to close</div>
+      </div>
+    </div>
+  </div>
 
   <script src="js/config.js"></script>
   <script src="js/dashboard.js"></script>

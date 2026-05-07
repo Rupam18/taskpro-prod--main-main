@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npm start --prefix backend",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run start --prefix backend",
+    "dev": "npm run dev --prefix backend",
+    "frontend": "npx serve .",
+    "seed": "npm run seed --prefix backend",
+    "test": "echo \"Error: no test msg\" && exit 1"
   },
   "keywords": [],
   "author": "",

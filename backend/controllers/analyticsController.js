@@ -99,3 +99,50 @@ exports.getProjectProgress = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// @desc    Get project health index
+// @route   GET /api/analytics/project-health
+exports.getProjectHealth = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const projects = await Project.find({ userId });
+    
+    const health = await Promise.all(projects.map(async (project) => {
+      const tasks = await Task.find({ projectId: project._id });
+      const total = tasks.length;
+      if (total === 0) return { name: project.name, score: 100, status: 'Stable', color: project.color };
+
+      const done = tasks.filter(t => t.status === 'done').length;
+      const overdue = tasks.filter(t => t.deadline && t.deadline < new Date() && t.status !== 'done').length;
+      
+      // Health Calculation Logic:
+      // Start with 100
+      // Deduct 2 points for every 10% incomplete
+      // Deduct 10 points for every overdue task
+      let score = 100;
+      score -= ( (total - done) / total ) * 20;
+      score -= overdue * 10;
+      
+      score = Math.max(0, Math.min(100, Math.round(score)));
+      
+      let status = 'Stable';
+      if (score < 50) status = 'Critical';
+      else if (score < 80) status = 'At Risk';
+      
+      return {
+        _id: project._id,
+        name: project.name,
+        score,
+        status,
+        overdue,
+        totalTasks: total,
+        color: project.color
+      };
+    }));
+
+    res.json(health);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+

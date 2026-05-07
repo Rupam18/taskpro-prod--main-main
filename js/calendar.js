@@ -47,7 +47,28 @@ document.addEventListener('DOMContentLoaded', () => {
       allProjects = await res.json();
       populateProjectDropdown();
       populateProjectFilter();
+      renderSidebarProjects();
     } catch (err) { console.error(err); }
+  }
+
+  function renderSidebarProjects() {
+    const container = document.getElementById('sidebarProjectList');
+    if (!container) return;
+    container.innerHTML = '';
+    allProjects.slice(0, 5).forEach(project => {
+      const item = document.createElement('a');
+      item.href = 'dashboard.html';
+      item.className = `nav-item`;
+      item.style.borderLeft = `3px solid ${project.color || '#6366f1'}`;
+      item.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span>${project.name}</span>
+      `;
+      item.onclick = (e) => {
+        localStorage.setItem('selectedProjectId', project._id);
+      };
+      container.appendChild(item);
+    });
   }
 
   async function fetchTeam() {

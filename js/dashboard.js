@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     await fetchTasks();
     await fetchTeamMembers();
     await fetchActivities();
-    setupGlobalSearch();
+    await fetchProjectHealth();
+    setupCommandPalette();
     setupKanbanDragDrop();
     setupSidebarEvents();
     setupModalEvents();
@@ -126,6 +127,59 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error('Failed to fetch activities');
     }
+  }
+
+  async function fetchProjectHealth() {
+    try {
+      const res = await fetch(`${API_BASE}/analytics/project-health`, { headers });
+      const data = await res.json();
+      if (res.ok) {
+        updateHealthUI(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch health');
+    }
+  }
+
+  function updateHealthUI(healthData) {
+    const card = document.getElementById('projectHealthCard');
+    const statusEl = document.getElementById('healthStatus');
+    const scoreEl = document.getElementById('healthScore');
+    const fillEl = document.getElementById('healthGaugeFill');
+    const msgEl = document.getElementById('healthMessage');
+
+    if (selectedProjectId) {
+      const project = healthData.find(h => h._id === selectedProjectId);
+      if (project) {
+        statusEl.textContent = project.status;
+        statusEl.className = `health-status ${project.status.toLowerCase().replace(' ', '-')}`;
+        scoreEl.textContent = project.score;
+        
+        // Gauge calculation: max 126
+        const offset = 126 - (project.score / 100) * 126;
+        fillEl.style.strokeDasharray = `${126 - offset}, 126`;
+        
+        if (project.score >= 80) {
+          msgEl.textContent = `Project is performing optimally. ${project.totalTasks} tasks tracked.`;
+        } else if (project.score >= 50) {
+          msgEl.textContent = `Moderate risk detected. ${project.overdue} overdue tasks found.`;
+        } else {
+          msgEl.textContent = `Critical health! Attention required on ${project.overdue} overdue tasks.`;
+        }
+        return;
+      }
+    }
+    
+    // Default / All Projects
+    statusEl.textContent = 'Aggregated';
+    statusEl.className = 'health-status';
+    const avgScore = healthData.length > 0 
+      ? Math.round(healthData.reduce((acc, curr) => acc + curr.score, 0) / healthData.length)
+      : 100;
+    scoreEl.textContent = avgScore;
+    const offset = 126 - (avgScore / 100) * 126;
+    fillEl.style.strokeDasharray = `${126 - offset}, 126`;
+    msgEl.textContent = "Select a specific project for precise health diagnostics.";
   }
 
   // ========== RENDERING ==========
@@ -223,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedProjectId = project._id;
         localStorage.setItem('selectedProjectId', selectedProjectId);
         fetchTasks();
+        fetchProjectHealth();
         renderSidebarProjects();
       };
       container.appendChild(item);
@@ -412,71 +467,158 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function setupFilterEvents() {
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-      btn.onclick = () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        fetchTasks(btn.textContent);
-      };
-    });
-  }
+  // ========== COMMAND PALETTE ==========
+  let cpSelectedIndex = 0;
+  let cpResults = [];
 
-  function setupGlobalSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const resultsPanel = document.getElementById('searchResults');
-    if (!searchInput || !resultsPanel) return;
+  function setupCommandPalette() {
+    const overlay = document.getElementById('commandPalette');
+    const input = document.getElementById('cpInput');
+    const resultsContainer = document.getElementById('cpResults');
 
-    searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase().trim();
-      if (!term) {
-        resultsPanel.classList.add('hidden');
-        return;
+    const togglePalette = (show) => {
+      if (show) {
+        overlay.classList.add('active');
+        input.value = '';
+        input.focus();
+        renderCPResults([]);
+      } else {
+        overlay.classList.remove('active');
       }
-
-      const results = [
-        ...allTasks.map(t => ({ title: t.title, type: 'Task', id: t._id })),
-        ...allProjects.map(p => ({ title: p.name, type: 'Project', id: p._id })),
-        ...teamMembers.map(m => ({ title: m.name, type: 'Member', id: m._id }))
-      ].filter(r => r.title.toLowerCase().includes(term));
-
-      resultsPanel.innerHTML = results.map(r => `
-        <div class="search-result-item" onclick="handleSearchResultClick('${r.type}', '${r.id}')">
-          <div class="search-result-icon">${r.type[0]}</div>
-          <div class="search-result-info">
-            <span class="search-result-title">${r.title}</span>
-            <span class="search-result-type">${r.type}</span>
-          </div>
-        </div>
-      `).join('') || '<div class="search-result-item">No results found</div>';
-      
-      resultsPanel.classList.remove('hidden');
-    });
+    };
 
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        searchInput.focus();
+        togglePalette(true);
+      }
+      if (e.key === 'Escape') togglePalette(false);
+      
+      if (overlay.classList.contains('active')) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          cpSelectedIndex = (cpSelectedIndex + 1) % cpResults.length;
+          updateCPSelection();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          cpSelectedIndex = (cpSelectedIndex - 1 + cpResults.length) % cpResults.length;
+          updateCPSelection();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (cpResults[cpSelectedIndex]) handleCPAction(cpResults[cpSelectedIndex]);
+        }
       }
     });
 
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.topbar-search')) resultsPanel.classList.add('hidden');
+    input.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      generateCPResults(term);
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) togglePalette(false);
     });
   }
 
-  window.handleSearchResultClick = (type, id) => {
-    if (type === 'Project') {
-      selectedProjectId = id;
-      localStorage.setItem('selectedProjectId', id);
+  function generateCPResults(term) {
+    const commands = [
+      { title: 'Create New Task', type: 'Action', action: 'create_task', icon: '⚡' },
+      { title: 'View Analytics', type: 'Navigation', url: 'analytics.html', icon: '📊' },
+      { title: 'Manage Team', type: 'Navigation', url: 'team.html', icon: '👥' },
+      { title: 'Project List', type: 'Navigation', url: 'projects.html', icon: '📁' }
+    ];
+
+    const projectResults = allProjects.map(p => ({
+      title: p.name,
+      type: 'Project',
+      id: p._id,
+      icon: '📁'
+    }));
+
+    const taskResults = allTasks.map(t => ({
+      title: t.title,
+      type: 'Task',
+      id: t._id,
+      icon: '✓'
+    }));
+
+    cpResults = [...commands, ...projectResults, ...taskResults].filter(r => 
+      r.title.toLowerCase().includes(term)
+    ).slice(0, 8);
+
+    cpSelectedIndex = 0;
+    renderCPResults(cpResults);
+  }
+
+  function renderCPResults(results) {
+    const container = document.getElementById('cpResults');
+    if (results.length === 0) {
+      container.innerHTML = `<div class="cp-group-label">Quick Actions</div>
+        <div class="cp-item selected" onclick="handleCPAction({action: 'create_task'})">
+          <div class="cp-item-icon">⚡</div>
+          <div class="cp-item-info">
+            <span class="cp-item-title">Create New Task</span>
+            <span class="cp-item-type">Action</span>
+          </div>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = results.map((r, i) => `
+      <div class="cp-item ${i === cpSelectedIndex ? 'selected' : ''}" onclick="handleCPAction(cpResults[${i}])">
+        <div class="cp-item-icon">${r.icon}</div>
+        <div class="cp-item-info">
+          <span class="cp-item-title">${r.title}</span>
+          <span class="cp-item-type">${r.type}</span>
+        </div>
+        ${r.type === 'Navigation' ? '<span class="cp-shortcut">GO</span>' : ''}
+      </div>
+    `).join('');
+  }
+
+  function setupFilterEvents() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const label = btn.textContent.trim();
+        let tag = label;
+        
+        // Mapping for seeded data consistency
+        // This ensures the demo data (BUG/DEVELOPMENT) works with the UI buttons (Frontend/Backend)
+        if (label === 'Frontend') tag = 'Bug';
+        if (label === 'Backend') tag = 'Development';
+        
+        fetchTasks(tag);
+        showToast(`Filtering by ${label}`);
+      });
+    });
+  }
+
+  function updateCPSelection() {
+    const items = document.querySelectorAll('.cp-item');
+    items.forEach((item, i) => {
+      item.classList.toggle('selected', i === cpSelectedIndex);
+      if (i === cpSelectedIndex) item.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  function handleCPAction(item) {
+    if (item.action === 'create_task') {
+      document.getElementById('taskModal').classList.add('active');
+    } else if (item.url) {
+      window.location.href = item.url;
+    } else if (item.type === 'Project') {
+      selectedProjectId = item.id;
+      localStorage.setItem('selectedProjectId', item.id);
       fetchTasks();
+      fetchProjectHealth();
       renderSidebarProjects();
     }
-    document.getElementById('searchResults').classList.add('hidden');
-    const input = document.getElementById('searchInput');
-    if (input) input.value = '';
-  };
+    document.getElementById('commandPalette').classList.remove('active');
+  }
 
   function setupKanbanDragDrop() {
     document.querySelectorAll('.kanban-cards').forEach(col => {
@@ -503,6 +645,26 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
     });
 
+    // Notification Dropdown Toggle
+    const notifBtn = document.getElementById('notifBtn');
+    const notifDropdown = document.getElementById('notifDropdown');
+    
+    notifBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifDropdown.classList.toggle('hidden');
+      if (!notifDropdown.classList.contains('hidden')) {
+        renderNotifications();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (notifDropdown && !notifDropdown.classList.contains('hidden')) {
+        if (!notifDropdown.contains(e.target) && !notifBtn.contains(e.target)) {
+          notifDropdown.classList.add('hidden');
+        }
+      }
+    });
+
     document.getElementById('navMyTasks')?.addEventListener('click', (e) => {
       e.preventDefault();
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -513,12 +675,27 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Showing your tasks');
     });
 
+    document.getElementById('navDashboard')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      selectedProjectId = null;
+      localStorage.removeItem('selectedProjectId');
+      resetDashboardHeader();
+      fetchTasks();
+      fetchProjectHealth();
+      renderSidebarProjects();
+      
+      // Update active state
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      e.target.closest('.nav-item').classList.add('active');
+    });
+
     document.getElementById('clearProjectFilter')?.addEventListener('click', (e) => {
       e.preventDefault();
       selectedProjectId = null;
       localStorage.removeItem('selectedProjectId');
       resetDashboardHeader();
       fetchTasks();
+      fetchProjectHealth();
       renderSidebarProjects();
     });
 
@@ -598,6 +775,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       requestAnimationFrame(update);
     });
+  }
+
+  function renderNotifications() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+
+    if (activities.length === 0) {
+      list.innerHTML = '<div class="notif-empty">No new notifications</div>';
+      return;
+    }
+
+    list.innerHTML = activities.slice(0, 5).map(act => `
+      <div class="notif-item">
+        <div class="notif-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        </div>
+        <div class="notif-content">
+          <span class="notif-title">${act.description}</span>
+          <span class="notif-time">${formatTimeAgo(act.createdAt)}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function formatTimeAgo(dateStr) {
+    if (!dateStr) return 'Recently';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.floor((now - date) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return date.toLocaleDateString();
   }
 
   init();

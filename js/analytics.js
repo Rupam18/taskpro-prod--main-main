@@ -77,7 +77,32 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('completedTasks').textContent = data.done;
         document.getElementById('completionRate').textContent = `${data.completionRate}%`;
         document.getElementById('overdueTasks').textContent = data.overdue;
+
+        calculatePrediction(data.total, data.done);
     } catch (err) { console.error(err); }
+  }
+
+  function calculatePrediction(total, done) {
+    const remaining = total - done;
+    const msgEl = document.getElementById('predictionMessage');
+    const dateEl = document.getElementById('predictedShipDate');
+
+    if (remaining === 0) {
+      msgEl.textContent = "All current tasks are completed! Team velocity is optimal.";
+      dateEl.textContent = "DONE";
+      return;
+    }
+
+    // Assume average velocity of 5 tasks per week for dummy calculation if no real history
+    // In a real app, we'd calculate this from 'tasks-over-time'
+    const velocityPerDay = 0.8; 
+    const daysNeeded = Math.ceil(remaining / velocityPerDay);
+    
+    const shipDate = new Date();
+    shipDate.setDate(shipDate.getDate() + daysNeeded);
+
+    msgEl.textContent = `Based on current velocity, you have ${remaining} tasks remaining.`;
+    dateEl.textContent = shipDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   async function updateStatusChart(query) {

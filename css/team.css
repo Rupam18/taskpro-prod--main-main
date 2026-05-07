@@ -322,3 +322,143 @@
   box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3); transition: all 0.3s;
 }
 .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 77, 77, 0.4); }
+/* AI Talent Matcher Widget */
+.expert-matcher {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  min-width: 420px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.matcher-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.matcher-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(124, 58, 237, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neon-purple);
+  flex-shrink: 0;
+}
+
+.ai-glow {
+  background: rgba(124, 58, 237, 0.15) !important;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.matcher-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.matcher-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.matcher-select {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--text-primary);
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.matcher-select:focus {
+  border-color: var(--neon-purple);
+  background: rgba(124, 58, 237, 0.05);
+}
+
+/* AI Scanning Animation */
+.ai-scanning {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  color: var(--neon-purple);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pulse-ring {
+  width: 12px;
+  height: 12px;
+  background: var(--neon-purple);
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--neon-purple);
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* Match Result Card */
+.match-result-card {
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 0 20px rgba(124, 58, 237, 0.1);
+}
+
+.match-result-card.hidden { display: none; }
+
+.loader-tiny {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.expertise-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+}

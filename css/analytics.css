@@ -172,3 +172,9 @@ canvas {
   .content-header { flex-direction: column; align-items: flex-start; gap: 16px; }
   .kpi-grid { grid-template-columns: 1fr; }
 }
+.kpi-card.predictive {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.kpi-icon.blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
