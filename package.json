@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npm run start --prefix backend",
+    "start": "node backend/server.js",
     "dev": "npm run dev --prefix backend",
     "frontend": "npx serve .",
     "seed": "npm run seed --prefix backend",
+    "install-all": "npm install && cd backend && npm install",
     "test": "echo \"Error: no test msg\" && exit 1"
   },
   "keywords": [],

@@ -7,6 +7,8 @@ dotenv.config();
 
 const app = express();
 
+const path = require('path');
+
 app.use(express.json());
 
 // CORS Configuration
@@ -17,18 +19,15 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'http://127.0.0.1:5001',
   process.env.FRONTEND_URL
-].filter(Boolean).map(url => url.replace(/\/$/, "")); // Remove trailing slashes
+].filter(Boolean).map(url => url.replace(/\/$/, ""));
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
+    if (!origin || process.env.NODE_ENV === 'development') return callback(null, true);
     const normalizedOrigin = origin.replace(/\/$/, "");
     if (allowedOrigins.indexOf(normalizedOrigin) !== -1 || normalizedOrigin.includes('vercel.app')) {
       callback(null, true);
     } else {
-      console.log('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -37,7 +36,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.get('/', (req, res) => res.send('TaskPro API is running...'));
+// API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
@@ -45,6 +44,16 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/activities', require('./routes/activityRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/team', require('./routes/teamRoutes'));
+
+// Serve Static Frontend in Production
+const frontendPath = path.join(__dirname, '..');
+app.use(express.static(frontendPath));
+
+// Handle SPA routing - send all other requests to index.html
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api')) return; // Don't intercept API calls
+  res.sendFile(path.join(frontendPath, 'dashboard.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 
