@@ -50,7 +50,7 @@ const frontendPath = path.join(__dirname, '..');
 app.use(express.static(frontendPath));
 
 // Handle SPA routing - send all other requests to index.html
-app.get('*', (req, res) => {
+app.get('(.*)', (req, res) => {
   if (req.path.startsWith('/api')) return; // Don't intercept API calls
   res.sendFile(path.join(frontendPath, 'dashboard.html'));
 });
